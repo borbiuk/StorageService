@@ -1,6 +1,8 @@
 ﻿using API.Services;
 using API.TransferData;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Threading.Tasks;
 
 namespace WebApi.Controllers
@@ -9,39 +11,77 @@ namespace WebApi.Controllers
 	[Route("api/data")]
 	public class DataAccessController : ControllerBase
 	{
-		private readonly IDataAccessService _das;
+		private const long ErrorIdValue = -1;
+		private const object ErrorDtoValue = null;
 
-		public DataAccessController(IDataAccessService dataAccessService)
+		private readonly IDataAccessService _das;
+		private readonly ILogger _logger;
+
+		public DataAccessController(
+			IDataAccessService dataAccessService, ILogger<DataAccessController> logger)
 		{
 			_das = dataAccessService;
+			_logger = logger;
 		}
 
 		[HttpDelete]
 		[Route("delete/{id}")]
 		public async Task DeleteData([FromRoute]long id)
 		{
-			await _das.RemoveDataAsync(id);
+			try
+			{
+				await _das.RemoveDataAsync(id);
+			}
+			catch (Exception ex)
+			{
+				LogException(ex);
+			}
 		}
 
 		[HttpGet]
 		[Route("get/{id}")]
 		public BaseEntityDto GetData([FromRoute]long id)
 		{
-			return _das.GetData(id);
+			try
+			{
+				return _das.GetData(id);
+			}
+			catch (Exception ex)
+			{
+				LogException(ex);
+				return (BaseEntityDto)ErrorDtoValue;
+			}
 		}
 
 		[HttpPut]
 		[Route("create")]
 		public async Task<long> SaveData([FromForm]string data)
 		{
-			return await _das.SaveDataAsync(data);
+			try
+			{
+				return await _das.SaveDataAsync(data);
+			}
+			catch (Exception ex)
+			{
+				LogException(ex);
+				return ErrorIdValue;
+			}
 		}
 
 		[HttpPost]
 		[Route("update")]
 		public async Task UpdateData([FromForm]BaseEntityDto dto)
 		{
-			await _das.UpdateDataAsync(dto);
+			try
+			{
+				await _das.UpdateDataAsync(dto);
+			}
+			catch (Exception ex)
+			{
+				LogException(ex);
+			}
 		}
+
+		private void LogException(Exception exception) => _logger.LogError($"[{DateTime.Now}] - {exception}");
 	}
 }
