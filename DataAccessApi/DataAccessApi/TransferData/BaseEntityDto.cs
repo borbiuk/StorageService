@@ -1,16 +1,15 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
-namespace DAL.Entities
+namespace API.TransferData
 {
-	/// <summary>
-	/// Simple entity.
-	/// </summary>
-	public class EntityBase : IEntity
+	public class BaseEntityDto
 	{
 		public long Id { get; set; }
 
 		public DateTime Date { get; set; }
 
+		[MaxLength(1_000)]
 		public string Data { get; set; }
 	}
 }

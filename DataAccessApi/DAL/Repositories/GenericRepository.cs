@@ -8,10 +8,10 @@ namespace DAL.Repositories
 {
 	public class GenericRepository<TEntity> : IRepository<TEntity> where TEntity : class, IEntity
 	{
-		private readonly AppContext _context;
+		private readonly ApplicationContext _context;
 		private readonly DbSet<TEntity> _set;
 
-		public GenericRepository(AppContext appContext)
+		public GenericRepository(ApplicationContext appContext)
 		{
 			_context = appContext;
 			_set = _context.Set<TEntity>();
@@ -32,12 +32,9 @@ namespace DAL.Repositories
 				_set.Add(entity);
 			else
 			{
-				var existingEntity = Get(entity.Id);
-
-				if (existingEntity == null)
-					_set.Add(entity);
-				else
-					_set.Update(entity);
+				var existingEntity = GetAsync(entity.Id);
+				var attachedEntry = _context.Entry(existingEntity);
+				attachedEntry.CurrentValues.SetValues(entity);
 			}
 		}
 

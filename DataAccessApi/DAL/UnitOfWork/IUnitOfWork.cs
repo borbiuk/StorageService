@@ -7,10 +7,10 @@ namespace DAL.UnitOfWork
 {
 	public interface IUnitOfWork : IDisposable
 	{
-		IRepository<EntityBase> Entities { get; }
-
 		void Commit();
 
 		Task CommitAsync();
+
+		IRepository<BaseEntity> Entities { get; }
 	}
 }

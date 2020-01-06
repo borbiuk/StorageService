@@ -7,20 +7,20 @@ namespace DAL.UnitOfWork
 {
 	public class UnitOfWork : IUnitOfWork
 	{
-		private readonly AppContext _context;
+		private readonly ApplicationContext _context;
 
-		private IRepository<EntityBase> _entities;
+		private IRepository<BaseEntity> _entities;
 		private bool _disposed;
 
-		public UnitOfWork(AppContext appContext)
+		public UnitOfWork(ApplicationContext appContext)
 		{
 			_context = appContext;
 		}
 
 		/// <summary>
-		/// Repository provide access to <see cref="EntityBase"/> storage.
+		/// Repository provide access to <see cref="BaseEntity"/> storage.
 		/// </summary>
-		public IRepository<EntityBase> Entities => _entities ?? (_entities = new GenericRepository<EntityBase>(_context));
+		public IRepository<BaseEntity> Entities => _entities ?? (_entities = new GenericRepository<BaseEntity>(_context));
 
 		/// <summary>
 		/// Commit changes to data storage.
