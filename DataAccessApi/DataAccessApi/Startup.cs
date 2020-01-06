@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApi
 {
@@ -21,7 +22,7 @@ namespace WebApi
 		public IConfiguration Configuration { get; }
 
 		// This method gets called by the runtime. Use this method to add services to the container.
-		public static void ConfigureServices(IServiceCollection services)
+		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddControllers();
 			services.AddAutoMapper(typeof(Startup));
@@ -30,8 +31,9 @@ namespace WebApi
 			services.AddScoped<IUnitOfWork, UnitOfWork>();
 			services.AddScoped<IDataAccessService, DataAccessService>();
 
-			// Conect to Database
-			services.AddDbContext<ApplicationContext>();
+			// Connect to Database
+			services.AddDbContext<ApplicationContext>(options =>
+				options.UseSqlServer(Configuration.GetConnectionString("SqlDatabase")));
 
 			// Register the Swagger generator, defining 1 or more Swagger documents
 			services.AddSwaggerGen(c =>
@@ -41,7 +43,7 @@ namespace WebApi
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
 			if (env.IsDevelopment())
 			{
