@@ -20,6 +20,25 @@ namespace API.Services
 
 		private static DateTime CurrentTime { get => DateTime.Now; }
 
+		public BaseEntityDto GetData(long id)
+		{
+			var entity = _uow.Entities.Get(id);
+
+			var dto = entity != null ? _mapper.Map<BaseEntityDto>(entity) : null;
+			return dto;
+		}
+
+		public async Task<BaseEntityDto> GetDataAsync(long id)
+		{
+			var entity = await _uow.Entities.GetAsync(id);
+			var dto = entity != null ? _mapper.Map<BaseEntityDto>(entity) : null;
+			return dto;
+		}
+
+		public void RemoveData(long id) => _uow.Entities.Delete(id);
+
+		public async Task RemoveDataAsync(long id) => await _uow.Entities.DeleteAsync(id);
+
 		public long SaveData(string data)
 		{
 			var entity = new BaseEntity
@@ -48,11 +67,18 @@ namespace API.Services
 			return entity.Id;
 		}
 
-		public BaseEntityDto GetData(long id)
+		public void UpdateData(BaseEntityDto dto)
 		{
-			var entity = _uow.Entities.Get(id);
-			var dto = entity != null ? _mapper.Map<BaseEntityDto>(entity) : null;
-			return dto;
+			var entity = _mapper.Map<BaseEntity>(dto);
+			_uow.Entities.AddOrUpdate(entity);
+			_uow.Commit();
+		}
+
+		public async Task UpdateDataAsync(BaseEntityDto dto)
+		{
+			var entity = _mapper.Map<BaseEntity>(dto);
+			await _uow.Entities.AddOrUpdateAsync(entity);
+			await _uow.CommitAsync();
 		}
 	}
 }
