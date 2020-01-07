@@ -9,7 +9,7 @@ namespace DAL.UnitOfWork
 	{
 		private readonly ApplicationContext _context;
 
-		private IRepository<BaseEntity> _entities;
+		private IRepository<SimpleEntity> _entities;
 		private bool _disposed;
 
 		public UnitOfWork(ApplicationContext appContext)
@@ -18,9 +18,9 @@ namespace DAL.UnitOfWork
 		}
 
 		/// <summary>
-		/// Repository provide access to <see cref="BaseEntity"/> storage.
+		/// Repository provide access to <see cref="SimpleEntity"/> storage.
 		/// </summary>
-		public IRepository<BaseEntity> Entities => _entities ?? (_entities = new GenericRepository<BaseEntity>(_context));
+		public IRepository<SimpleEntity> Entities => _entities ?? (_entities = new GenericRepository<SimpleEntity>(_context));
 
 		/// <summary>
 		/// Commit changes to data storage.

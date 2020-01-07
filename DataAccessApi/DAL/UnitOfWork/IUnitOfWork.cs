@@ -11,6 +11,6 @@ namespace DAL.UnitOfWork
 
 		Task CommitAsync();
 
-		IRepository<BaseEntity> Entities { get; }
+		IRepository<SimpleEntity> Entities { get; }
 	}
 }

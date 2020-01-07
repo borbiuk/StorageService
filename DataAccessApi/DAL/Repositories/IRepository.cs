@@ -6,17 +6,11 @@ namespace DAL.Repositories
 {
 	public interface IRepository<TEntity> where TEntity : class, IEntity
 	{
-		void AddOrUpdate(TEntity entity);
+		Task AddOrUpdate(TEntity entity);
 
-		Task AddOrUpdateAsync(TEntity entity);
+		Task Delete(long id);
 
-		void Delete(long id);
-
-		Task DeleteAsync(long id);
-
-		TEntity Get(long id);
-
-		Task<TEntity> GetAsync(long id);
+		Task<TEntity> Get(long id);
 
 		IQueryable<TEntity> GetAll();
 	}

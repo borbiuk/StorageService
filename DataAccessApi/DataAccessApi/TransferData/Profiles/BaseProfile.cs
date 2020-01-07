@@ -1,16 +1,14 @@
-﻿using API.Services;
-using AutoMapper;
+﻿using AutoMapper;
 using DAL.Entities;
-using DAL.UnitOfWork;
 
 namespace API.TransferData.Profiles
 {
-	public class BaseProfile : Profile
+	internal class BaseProfile : Profile
 	{
 		public BaseProfile()
 		{
-			CreateMap<BaseEntityDto, BaseEntity>();
-			CreateMap<BaseEntity, BaseEntityDto>();
+			CreateMap<EntityDto, SimpleEntity>();
+			CreateMap<SimpleEntity, EntityDto>();
 		}
 	}
 }

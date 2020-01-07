@@ -40,16 +40,16 @@ namespace WebApi.Controllers
 
 		[HttpGet]
 		[Route("get/{id}")]
-		public BaseEntityDto GetData([FromRoute]long id)
+		public async Task<EntityDto> GetData([FromRoute]long id)
 		{
 			try
 			{
-				return _das.GetData(id);
+				return await _das.GetDataAsync(id);
 			}
 			catch (Exception ex)
 			{
 				LogException(ex);
-				return (BaseEntityDto)ErrorDtoValue;
+				return (EntityDto)ErrorDtoValue;
 			}
 		}
 
@@ -70,7 +70,7 @@ namespace WebApi.Controllers
 
 		[HttpPost]
 		[Route("update")]
-		public async Task UpdateData([FromForm]BaseEntityDto dto)
+		public async Task UpdateData([FromForm]EntityDto dto)
 		{
 			try
 			{

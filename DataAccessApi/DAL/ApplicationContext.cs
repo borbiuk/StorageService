@@ -8,7 +8,7 @@ namespace DAL
 		/// <summary>
 		/// Simple entities storage.
 		/// </summary>
-		public DbSet<BaseEntity> Entities { get; set; }
+		public DbSet<SimpleEntity> SimpleEntities { get; set; }
 
 		public ApplicationContext(DbContextOptions<ApplicationContext> options)
 			: base(options)
@@ -20,11 +20,25 @@ namespace DAL
 		{
 			base.OnModelCreating(modelBuilder);
 
-			modelBuilder.Entity<BaseEntity>(entity =>
+			modelBuilder.Entity<SimpleEntity>(entity =>
 			{
 				entity.HasKey(_ => _.Id);
-				entity.Property(_ => _.Id).ValueGeneratedOnAdd();
-				entity.HasIndex(_ => _.Date);
+				entity.Property(_ => _.Id)
+					.HasColumnName("id")
+					.HasColumnType("BIGINT")
+					.ValueGeneratedOnAdd()
+					.IsRequired();
+
+				entity.Property(_ => _.Date)
+					.HasColumnName("date")
+					.HasColumnType("DATETIME")
+					.IsRequired();
+
+				entity.Property(_ => _.Data)
+					.HasColumnName("data")
+					.HasColumnType("CHAR")
+					.HasMaxLength(1_000)
+					.IsRequired();
 			});
 		}
 	}

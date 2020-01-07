@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace API.Services
 {
-	public class DataAccessService : IDataAccessService
+	internal class DataAccessService : IDataAccessService
 	{
 		private readonly IUnitOfWork _uow;
 		private readonly IMapper _mapper;
@@ -20,64 +20,32 @@ namespace API.Services
 
 		private static DateTime CurrentTime { get => DateTime.Now; }
 
-		public BaseEntityDto GetData(long id)
+		public async Task<EntityDto> GetDataAsync(long id)
 		{
-			var entity = _uow.Entities.Get(id);
-
-			var dto = entity != null ? _mapper.Map<BaseEntityDto>(entity) : null;
+			var entity = await _uow.Entities.Get(id);
+			var dto = entity != null ? _mapper.Map<EntityDto>(entity) : null;
 			return dto;
 		}
+		public async Task RemoveDataAsync(long id) => await _uow.Entities.Delete(id);
 
-		public async Task<BaseEntityDto> GetDataAsync(long id)
+		public async Task<long> SaveDataAsync(string data)
 		{
-			var entity = await _uow.Entities.GetAsync(id);
-			var dto = entity != null ? _mapper.Map<BaseEntityDto>(entity) : null;
-			return dto;
-		}
-
-		public void RemoveData(long id) => _uow.Entities.Delete(id);
-
-		public async Task RemoveDataAsync(long id) => await _uow.Entities.DeleteAsync(id);
-
-		public long SaveData(string data)
-		{
-			var entity = new BaseEntity
+			var entity = new SimpleEntity
 			{
 				Data = data,
 				Date = CurrentTime,
 			};
-
-			_uow.Entities.AddOrUpdate(entity);
-			_uow.Commit();
-
-			return entity.Id;
-		}
-
-		public async Task<long> SaveDataAsync(string data)
-		{
-			var entity = new BaseEntity
-			{
-				Data = data,
-				Date = CurrentTime
-			};
-
-			await _uow.Entities.AddOrUpdateAsync(entity);
+			await _uow.Entities.AddOrUpdate(entity);
 			await _uow.CommitAsync();
 
 			return entity.Id;
 		}
 
-		public void UpdateData(BaseEntityDto dto)
+		public async Task UpdateDataAsync(EntityDto dto)
 		{
-			var entity = _mapper.Map<BaseEntity>(dto);
-			_uow.Entities.AddOrUpdate(entity);
-			_uow.Commit();
-		}
+			var entity = _mapper.Map<SimpleEntity>(dto);
 
-		public async Task UpdateDataAsync(BaseEntityDto dto)
-		{
-			var entity = _mapper.Map<BaseEntity>(dto);
-			await _uow.Entities.AddOrUpdateAsync(entity);
+			await _uow.Entities.AddOrUpdate(entity);
 			await _uow.CommitAsync();
 		}
 	}
