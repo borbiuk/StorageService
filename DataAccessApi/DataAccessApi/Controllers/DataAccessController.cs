@@ -1,4 +1,4 @@
-﻿using API.Services;
+﻿using API.Services.DataServices;
 using API.TransferData;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -70,7 +70,7 @@ namespace WebApi.Controllers
 
 		[HttpPost]
 		[Route("update")]
-		public async Task UpdateData([FromForm]EntityDto dto)
+		public async Task UpdateData([FromForm]UpdateEntityDto dto)
 		{
 			try
 			{

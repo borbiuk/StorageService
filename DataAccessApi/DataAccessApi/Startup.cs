@@ -1,5 +1,5 @@
 using Microsoft.OpenApi.Models;
-using API.Services;
+using API.Services.DataServices;
 using AutoMapper;
 using DAL;
 using DAL.UnitOfWork;
@@ -9,6 +9,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
+using FluentValidation.AspNetCore;
+using FluentValidation;
+using API.TransferData;
+using API.TransferData.Validators;
 
 namespace WebApi
 {
@@ -19,30 +23,50 @@ namespace WebApi
 			Configuration = configuration;
 		}
 
+		/// <summary>
+		/// Set of configuration properties.
+		/// </summary>
 		public IConfiguration Configuration { get; }
 
-		// This method gets called by the runtime. Use this method to add services to the container.
+		/// <summary>
+		/// Add services to the container.
+		/// </summary>
+		/// <remarks>
+		/// This method gets called by the runtime.
+		/// </remarks>
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddControllers();
+			services.AddControllers()
+				.AddFluentValidation(validator =>
+				{
+					validator.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
+					validator.ImplicitlyValidateChildProperties = true;
+				});
+
 			services.AddAutoMapper(typeof(Startup));
 
-			// DI setup.
+			// Dependency Injection setup.
 			services.AddScoped<IUnitOfWork, UnitOfWork>();
 			services.AddScoped<IDataAccessService, DataAccessService>();
+			services.AddTransient<IValidator<EntityDto>, EntityDtoValidator>();
 
-			// Connect to Database
+			// Connect to Database.
 			services.AddDbContext<ApplicationContext>(options =>
 				options.UseSqlServer(Configuration.GetConnectionString("SqlDatabase")));
 
-			// Register the Swagger generator, defining 1 or more Swagger documents
-			services.AddSwaggerGen(c =>
+			// Register the Swagger generator, defining 1 or more Swagger documents.
+			services.AddSwaggerGen(options =>
 			{
-				c.SwaggerDoc("v1", new OpenApiInfo { Title = "Data Access Api swagger", Version = "v1" });
+				options.SwaggerDoc("v1", new OpenApiInfo { Title = "Data Access Api swagger", Version = "v1" });
 			});
 		}
 
-		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+		/// <summary>
+		/// Configure the HTTP request pipeline.
+		/// </summary>
+		/// <remarks>
+		/// This method gets called by the runtime.
+		/// </remarks>
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
 			if (env.IsDevelopment())

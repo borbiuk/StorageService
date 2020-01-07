@@ -3,12 +3,12 @@ using DAL.Entities;
 
 namespace API.TransferData.Profiles
 {
-	internal class BaseProfile : Profile
+	internal class SimpleEntityProfile : Profile
 	{
-		public BaseProfile()
+		public SimpleEntityProfile()
 		{
-			CreateMap<EntityDto, SimpleEntity>();
 			CreateMap<SimpleEntity, EntityDto>();
+			CreateMap<UpdateEntityDto, SimpleEntity>();
 		}
 	}
 }

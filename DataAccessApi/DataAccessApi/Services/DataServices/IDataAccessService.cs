@@ -1,7 +1,7 @@
 ﻿using API.TransferData;
 using System.Threading.Tasks;
 
-namespace API.Services
+namespace API.Services.DataServices
 {
 	public interface IDataAccessService
 	{
@@ -11,6 +11,6 @@ namespace API.Services
 
 		Task<long> SaveDataAsync(string data);
 
-		Task UpdateDataAsync(EntityDto dto);
+		Task UpdateDataAsync(UpdateEntityDto dto);
 	}
 }

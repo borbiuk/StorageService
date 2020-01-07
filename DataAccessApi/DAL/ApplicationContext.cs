@@ -23,6 +23,7 @@ namespace DAL
 			modelBuilder.Entity<SimpleEntity>(entity =>
 			{
 				entity.HasKey(_ => _.Id);
+
 				entity.Property(_ => _.Id)
 					.HasColumnName("id")
 					.HasColumnType("BIGINT")
@@ -31,12 +32,12 @@ namespace DAL
 
 				entity.Property(_ => _.Date)
 					.HasColumnName("date")
-					.HasColumnType("DATETIME")
+					.HasColumnType("DATE")
 					.IsRequired();
 
 				entity.Property(_ => _.Data)
 					.HasColumnName("data")
-					.HasColumnType("CHAR")
+					.HasColumnType("CHAR(1000)")
 					.HasMaxLength(1_000)
 					.IsRequired();
 			});

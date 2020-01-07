@@ -5,7 +5,7 @@ using DAL.UnitOfWork;
 using System;
 using System.Threading.Tasks;
 
-namespace API.Services
+namespace API.Services.DataServices
 {
 	internal class DataAccessService : IDataAccessService
 	{
@@ -18,7 +18,7 @@ namespace API.Services
 			_mapper = mapper;
 		}
 
-		private static DateTime CurrentTime { get => DateTime.Now; }
+		private static DateTime CurrentTime { get => DateTime.UtcNow; }
 
 		public async Task<EntityDto> GetDataAsync(long id)
 		{
@@ -26,7 +26,11 @@ namespace API.Services
 			var dto = entity != null ? _mapper.Map<EntityDto>(entity) : null;
 			return dto;
 		}
-		public async Task RemoveDataAsync(long id) => await _uow.Entities.Delete(id);
+		public async Task RemoveDataAsync(long id)
+		{
+			await _uow.Entities.Delete(id);
+			await _uow.CommitAsync();
+		}
 
 		public async Task<long> SaveDataAsync(string data)
 		{
@@ -41,7 +45,7 @@ namespace API.Services
 			return entity.Id;
 		}
 
-		public async Task UpdateDataAsync(EntityDto dto)
+		public async Task UpdateDataAsync(UpdateEntityDto dto)
 		{
 			var entity = _mapper.Map<SimpleEntity>(dto);
 
