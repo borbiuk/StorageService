@@ -26,7 +26,7 @@ namespace DataRecipient.API.Controllers
 
 		[HttpPut]
 		[Route("send")]
-		public async Task SendMessage([FromForm]ICollection<string> data)
+		public async Task SendMessages([FromForm]ICollection<string> data)
 		{
 			_logger.LogInformation($"[{DateTime.Now}] - {data}\n\t was receive.");
 		}
