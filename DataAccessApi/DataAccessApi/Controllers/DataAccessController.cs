@@ -1,5 +1,6 @@
 ﻿using API.Services.DataServices;
 using API.TransferData;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -15,12 +16,14 @@ namespace WebApi.Controllers
 		private const object ErrorDtoValue = null;
 
 		private readonly IDataAccessService _das;
+		private readonly IHttpContextAccessor _accessor;
 		private readonly ILogger _logger;
 
 		public DataAccessController(
-			IDataAccessService dataAccessService, ILogger<DataAccessController> logger)
+			IDataAccessService dataAccessService, IHttpContextAccessor accessor, ILogger<DataAccessController> logger)
 		{
 			_das = dataAccessService;
+			_accessor = accessor;
 			_logger = logger;
 		}
 
@@ -28,6 +31,7 @@ namespace WebApi.Controllers
 		[Route("delete/{id}")]
 		public async Task DeleteData([FromRoute]long id)
 		{
+			var x = GetId();
 			try
 			{
 				await _das.RemoveDataAsync(id);
@@ -42,6 +46,7 @@ namespace WebApi.Controllers
 		[Route("get/{id}")]
 		public async Task<EntityDto> GetData([FromRoute]long id)
 		{
+			var x = GetId();
 			try
 			{
 				return await _das.GetDataAsync(id);
@@ -57,6 +62,7 @@ namespace WebApi.Controllers
 		[Route("create")]
 		public async Task<long> SaveData([FromForm]string data)
 		{
+			var x = GetId();
 			try
 			{
 				return await _das.SaveDataAsync(data);
@@ -72,6 +78,7 @@ namespace WebApi.Controllers
 		[Route("update")]
 		public async Task UpdateData([FromForm]UpdateEntityDto dto)
 		{
+			var x = GetId();
 			try
 			{
 				await _das.UpdateDataAsync(dto);
@@ -83,5 +90,7 @@ namespace WebApi.Controllers
 		}
 
 		private void LogException(Exception exception) => _logger.LogError($"[{DateTime.Now}] - {exception}");
+
+		private string GetId() => _accessor.HttpContext.Connection.RemoteIpAddress.ToString();
 	}
 }

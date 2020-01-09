@@ -13,6 +13,7 @@ using FluentValidation.AspNetCore;
 using FluentValidation;
 using API.TransferData;
 using API.TransferData.Validators;
+using Microsoft.AspNetCore.Http;
 
 namespace WebApi
 {
@@ -49,6 +50,7 @@ namespace WebApi
 			services.AddScoped<IUnitOfWork, UnitOfWork>();
 			services.AddScoped<IDataAccessService, DataAccessService>();
 			services.AddTransient<IValidator<EntityDto>, EntityDtoValidator>();
+			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 			// Connect to Database.
 			services.AddDbContext<ApplicationContext>(options =>
