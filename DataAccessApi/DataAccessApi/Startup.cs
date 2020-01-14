@@ -14,7 +14,7 @@ using FluentValidation;
 using API.TransferData;
 using API.TransferData.Validators;
 
-namespace WebApi
+namespace DataAccess.Api
 {
 	public class Startup
 	{
@@ -56,9 +56,9 @@ namespace WebApi
 
 			// Register the Swagger generator, defining 1 or more Swagger documents.
 			services.AddSwaggerGen(options =>
-			{
-				options.SwaggerDoc("v1", new OpenApiInfo { Title = "Data Access Api swagger", Version = "v1" });
-			});
+				{
+					options.SwaggerDoc("v1", new OpenApiInfo { Title = "Data Access Api swagger", Version = "v1" });
+				});
 		}
 
 		/// <summary>
@@ -86,15 +86,15 @@ namespace WebApi
 			// Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
 			// specifying the Swagger JSON endpoint.
 			app.UseSwaggerUI(c =>
-			{
-				c.SwaggerEndpoint("/swagger/v1/swagger.json", "Data Access Api swagger v1");
-				c.RoutePrefix = string.Empty;
-			});
+				{
+					c.SwaggerEndpoint("/swagger/v1/swagger.json", "Data Access Api swagger v1");
+					c.RoutePrefix = string.Empty;
+				});
 
 			app.UseEndpoints(endpoints =>
-			{
-				endpoints.MapControllers();
-			});
+				{
+					endpoints.MapControllers();
+				});
 		}
 	}
 }

@@ -1,87 +1,37 @@
 ﻿using API.Services.DataServices;
 using API.TransferData;
+
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
+
 using System.Threading.Tasks;
 
-namespace WebApi.Controllers
+namespace DataAccess.Api.Controllers
 {
 	[ApiController]
 	[Route("api/data")]
 	public class DataAccessController : ControllerBase
 	{
-		private const long ErrorIdValue = -1;
-		private const object ErrorDtoValue = null;
-
 		private readonly IDataAccessService _das;
-		private readonly ILogger _logger;
 
-		public DataAccessController(
-			IDataAccessService dataAccessService, ILogger<DataAccessController> logger)
+		public DataAccessController(IDataAccessService dataAccessService)
 		{
 			_das = dataAccessService;
-			_logger = logger;
 		}
 
 		[HttpDelete]
 		[Route("delete/{id}")]
-		public async Task DeleteData([FromRoute]long id)
-		{
-			try
-			{
-				await _das.RemoveDataAsync(id);
-			}
-			catch (Exception ex)
-			{
-				LogException(ex);
-			}
-		}
+		public async Task DeleteData([FromRoute]long id) => await _das.RemoveDataAsync(id);
 
 		[HttpGet]
 		[Route("get/{id}")]
-		public async Task<EntityDto> GetData([FromRoute]long id)
-		{
-			try
-			{
-				return await _das.GetDataAsync(id);
-			}
-			catch (Exception ex)
-			{
-				LogException(ex);
-				return (EntityDto)ErrorDtoValue;
-			}
-		}
+		public async Task<EntityDto> GetData([FromRoute]long id) => await _das.GetDataAsync(id);
 
 		[HttpPut]
 		[Route("create")]
-		public async Task<long> SaveData([FromForm]string data)
-		{
-			try
-			{
-				return await _das.SaveDataAsync(data);
-			}
-			catch (Exception ex)
-			{
-				LogException(ex);
-				return ErrorIdValue;
-			}
-		}
+		public async Task<long> SaveData([FromForm]string data) => await _das.SaveDataAsync(data);
 
 		[HttpPost]
 		[Route("update")]
-		public async Task UpdateData([FromForm]UpdateEntityDto dto)
-		{
-			try
-			{
-				await _das.UpdateDataAsync(dto);
-			}
-			catch (Exception ex)
-			{
-				LogException(ex);
-			}
-		}
-
-		private void LogException(Exception exception) => _logger.LogError($"[{DateTime.Now}] - {exception}");
+		public async Task UpdateData([FromForm]UpdateEntityDto dto) => await _das.UpdateDataAsync(dto);
 	}
 }
