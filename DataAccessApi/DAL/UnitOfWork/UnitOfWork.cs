@@ -2,6 +2,7 @@
 using DAL.Repositories;
 using System;
 using System.Threading.Tasks;
+using DataAccess.Entities;
 
 namespace DAL.UnitOfWork
 {
@@ -9,7 +10,9 @@ namespace DAL.UnitOfWork
 	{
 		private readonly ApplicationContext _context;
 
-		private IRepository<SimpleEntity> _entities;
+		private IRepository<UserEntity> _userEntities;
+		private IRepository<SoftwareEntity> _softwareEntities;
+		private IRepository<UserSoftwareEntity> _userSoftware;
 		private bool _disposed;
 
 		public UnitOfWork(ApplicationContext appContext)
@@ -17,15 +20,12 @@ namespace DAL.UnitOfWork
 			_context = appContext;
 		}
 
-		/// <summary>
-		/// Repository provide access to <see cref="SimpleEntity"/> storage.
-		/// </summary>
-		public IRepository<SimpleEntity> Entities => _entities ?? (_entities = new GenericRepository<SimpleEntity>(_context));
+		public IRepository<UserEntity> Users => _userEntities ??= new GenericRepository<UserEntity>(_context);
+		
+		public IRepository<SoftwareEntity> Software => _softwareEntities ??= new GenericRepository<SoftwareEntity>(_context);
 
-		/// <summary>
-		/// Commit changes to data storage.
-		/// </summary>
-		public void Commit() => _context.SaveChanges();
+		public IRepository<UserSoftwareEntity> UserSoftware =>
+			_userSoftware ??= new GenericRepository<UserSoftwareEntity>(_context);
 
 		/// <summary>
 		/// Async commit changes to data storage.

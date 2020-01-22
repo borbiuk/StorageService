@@ -2,15 +2,18 @@
 using DAL.Repositories;
 using System;
 using System.Threading.Tasks;
+using DataAccess.Entities;
 
 namespace DAL.UnitOfWork
 {
 	public interface IUnitOfWork : IDisposable
 	{
-		void Commit();
-
 		Task CommitAsync();
 
-		IRepository<SimpleEntity> Entities { get; }
+		IRepository<UserEntity> Users { get; }
+
+		IRepository<SoftwareEntity> Software { get; }
+
+		IRepository<UserSoftwareEntity> UserSoftware { get; }
 	}
 }

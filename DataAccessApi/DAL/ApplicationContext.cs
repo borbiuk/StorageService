@@ -1,14 +1,14 @@
 ﻿using DAL.Entities;
+using DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace DAL
 {
 	public class ApplicationContext : DbContext
 	{
-		/// <summary>
-		/// Simple entities storage.
-		/// </summary>
-		public DbSet<SimpleEntity> SimpleEntities { get; set; }
+		public DbSet<UserEntity> UsersEntities { get; set; }
+
+		public DbSet<SoftwareEntity> SoftwareEntities { get; set; }
 
 		public ApplicationContext(DbContextOptions<ApplicationContext> options)
 			: base(options)
@@ -20,7 +20,7 @@ namespace DAL
 		{
 			base.OnModelCreating(modelBuilder);
 
-			modelBuilder.Entity<SimpleEntity>(entity =>
+			modelBuilder.Entity<UserEntity>(entity =>
 			{
 				entity.HasKey(_ => _.Id);
 
@@ -30,16 +30,41 @@ namespace DAL
 					.ValueGeneratedOnAdd()
 					.IsRequired();
 
-				entity.Property(_ => _.Date)
-					.HasColumnName("date")
-					.HasColumnType("DATE")
+				entity.Property(_ => _.Name)
+					.HasColumnName("name")
+					.HasColumnType("CHAR(20)")
+					.HasMaxLength(20)
+					.IsRequired();
+			});
+
+			modelBuilder.Entity<SoftwareEntity>(entity =>
+			{
+				entity.HasKey(_ => _.Id);
+
+				entity.Property(_ => _.Id)
+					.HasColumnName("id")
+					.HasColumnType("BIGINT")
+					.ValueGeneratedOnAdd()
 					.IsRequired();
 
-				entity.Property(_ => _.Data)
-					.HasColumnName("data")
-					.HasColumnType("CHAR(1000)")
-					.HasMaxLength(1_000)
+				entity.Property(_ => _.Name)
+					.HasColumnName("name")
+					.HasColumnType("CHAR(30)")
+					.HasMaxLength(30)
 					.IsRequired();
+			});
+
+			modelBuilder.Entity<UserSoftwareEntity>(entity =>
+			{
+				entity.HasKey(_ => new {_.UserId, _.SoftwareId});
+
+				entity.HasOne(_ => _.User)
+					.WithMany(_ => _.UserSoftwareEntities)
+					.HasForeignKey(_ => _.UserId);
+
+				entity.HasOne(_ => _.Software)
+					.WithMany(_ => _.UserSoftwareEntities)
+					.HasForeignKey(_ => _.SoftwareId);
 			});
 		}
 	}

@@ -1,6 +1,5 @@
 using Microsoft.OpenApi.Models;
 using API.Services.DataServices;
-using AutoMapper;
 using DAL;
 using DAL.UnitOfWork;
 using Microsoft.AspNetCore.Builder;
@@ -9,10 +8,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using FluentValidation.AspNetCore;
-using FluentValidation;
-using API.TransferData;
-using API.TransferData.Validators;
 
 namespace DataAccess.Api
 {
@@ -36,19 +31,11 @@ namespace DataAccess.Api
 		/// </remarks>
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddControllers()
-				.AddFluentValidation(validator =>
-				{
-					validator.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
-					validator.ImplicitlyValidateChildProperties = true;
-				});
-
-			services.AddAutoMapper(typeof(Startup));
+			services.AddControllers();
 
 			// Dependency Injection setup.
 			services.AddScoped<IUnitOfWork, UnitOfWork>();
 			services.AddScoped<IDataAccessService, DataAccessService>();
-			services.AddTransient<IValidator<EntityDto>, EntityDtoValidator>();
 
 			// Connect to Database.
 			services.AddDbContext<ApplicationContext>(options =>
@@ -87,7 +74,7 @@ namespace DataAccess.Api
 			// specifying the Swagger JSON endpoint.
 			app.UseSwaggerUI(c =>
 				{
-					c.SwaggerEndpoint("/swagger/v1/swagger.json", "Data Access Api swagger v1");
+					c.SwaggerEndpoint("/swagger/v1/swagger.json", "Software Accounting swagger v1");
 					c.RoutePrefix = string.Empty;
 				});
 

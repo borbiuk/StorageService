@@ -1,16 +1,28 @@
-﻿using API.TransferData;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using DAL.Entities;
+using DataAccess.Entities;
 
 namespace API.Services.DataServices
 {
 	public interface IDataAccessService
 	{
-		Task<EntityDto> GetDataAsync(long id);
+		Task<UserEntity> GetUserAsync(long id);
 
-		Task RemoveDataAsync(long id);
+		Task RemoveUserAsync(long id);
 
-		Task<long> SaveDataAsync(string data);
+		Task<long> SaveUserAsync(string name);
 
-		Task UpdateDataAsync(UpdateEntityDto dto);
+		Task SetUserSoftware(long userId, long softwareId);
+
+		Task RemoveUserSoftware(long userId, long softwareId);
+
+		Task<SoftwareEntity> GetSoftwareAsync(long id);
+
+		Task RemoveSoftwareAsync(long id);
+
+		Task<long> SaveSoftwareAsync(string name);
+
+		Task<IEnumerable<long>> GetSoftwareOwners(long softwareId);
 	}
 }
