@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-    <AssemblyName>WebApi</AssemblyName>
+    <AssemblyName>DataAccess.Api</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DAL\DataAccess.csproj" />
+    <ProjectReference Include="..\DAL\DataAccess.Storage.csproj" />
   </ItemGroup>
 
 </Project>
