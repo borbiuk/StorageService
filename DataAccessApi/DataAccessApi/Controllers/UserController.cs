@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using API.Services.DataServices;
-using DAL.Entities;
 using DataAccess.API.Dto;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,24 +18,34 @@ namespace DataAccess.API.Controllers
 
 		[HttpDelete]
 		[Route("delete/{id}")]
-		public async Task RemoveUser([FromRoute]long id) => await _das.RemoveUserAsync(id);
+		public async Task<ActionResult> RemoveUser([FromRoute]long id)
+		{
+			await _das.RemoveUserAsync(id);
+			return StatusCode(200);
+		}
 
 		[HttpGet]
 		[Route("get/{id}")]
-		public async Task<UserDto> GetUser([FromRoute]long id) => await _das.GetUserAsync(id);
+		public async Task<ActionResult<UserDto>> GetUser([FromRoute]long id) => await _das.GetUserAsync(id);
 
 		[HttpPut]
 		[Route("create")]
-		public async Task<long> CreateUser([FromHeader]string data) => await _das.SaveUserAsync(data);
+		public async Task<ActionResult<long>> CreateUser([FromHeader]string data) => await _das.SaveUserAsync(data);
 
 		[HttpPost]
 		[Route("set")]
-		public async Task SetSoft([FromHeader] long userId, long softwareId) =>
+		public async Task<ActionResult> SetSoft([FromHeader] long userId, long softwareId)
+		{
 			await _das.SetUserSoft(userId, softwareId);
+			return StatusCode(200);
+		}
 
 		[HttpPost]
 		[Route("take")]
-		public async Task TakeSoft([FromHeader] long userId, [FromHeader] long softwareId) =>
+		public async Task<ActionResult> TakeSoft([FromHeader] long userId, [FromHeader] long softwareId)
+		{
 			await _das.RemoveUserSoft(userId, softwareId);
+			return StatusCode(200);
+		}
 	}
 }

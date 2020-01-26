@@ -21,18 +21,26 @@ namespace DataAccess.Api.Controllers
 
 		[HttpDelete]
 		[Route("delete/{id}")]
-		public async Task RemoveSoft([FromRoute]long id) => await _das.RemoveSoftAsync(id);
+		public async Task<ActionResult> RemoveSoft([FromRoute]long id)
+		{
+			await _das.RemoveSoftAsync(id);
+			return StatusCode(200);
+		}
 
 		[HttpGet]
 		[Route("get/{id}")]
-		public async Task<SoftEntity> GetSoft([FromRoute]long id) => await _das.GetSoftAsync(id);
+		public async Task<ActionResult<SoftEntity>> GetSoft([FromRoute]long id) => await _das.GetSoftAsync(id);
 
 		[HttpPut]
 		[Route("create")]
-		public async Task<long> CreateSoft([FromHeader]string data) => await _das.SaveSoftAsync(data);
+		public async Task<ActionResult<long>> CreateSoft([FromHeader]string data) => await _das.SaveSoftAsync(data);
 
 		[HttpGet]
 		[Route("owners/{id}")]
-		public async Task<IEnumerable<long>> GetOwners([FromRoute] long id) => await _das.GetSoftOwners(id);
+		public async Task<ActionResult<IEnumerable<long>>> GetOwners([FromRoute] long id)
+		{
+			var result = await _das.GetSoftOwners(id);
+			return new ActionResult<IEnumerable<long>>(result);
+		}
 	}
 }
