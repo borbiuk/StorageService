@@ -64,9 +64,8 @@ namespace API.Services.DataServices
 			if (user == null)
 				return;
 
-			if (user.UserSoftEntities == null || !user.UserSoftEntities.Any())
-				user.UserSoftEntities = new List<UserSoftEntity>();
-			else if (user.UserSoftEntities.Any(x => x.SoftId == softId))
+			if (user.UserSoftEntities != null
+				&& user.UserSoftEntities.Any(x => x.UserId == userId && x.SoftId == softId))
 				return;
 
 			var userSoft = new UserSoftEntity
@@ -83,20 +82,15 @@ namespace API.Services.DataServices
 
 		public async Task RemoveUserSoft(long userId, long softId)
 		{
-			//var software = await GetSoftAsync(softwareId);
-			//if (software == null)
-			//	return;
-			//
-			//var user = await GetUserAsync(userId);
-			//if (user?.UserSoftwareEntities == null
-			//	|| user.UserSoftwareEntities.Count == 0
-			//	|| user.UserSoftwareEntities.FirstOrDefault(x => x.SoftwareId == softwareId) == null)
-			//	return;
-			//
-			//user.UserSoftwareEntities.Remove(user.UserSoftwareEntities.First(x => x.SoftwareId == softwareId));
-			//
-			//await _uow.Users.AddOrUpdate(user);
-			//await _uow.CommitAsync();
+			var userSoftId = _uow.UserSoft.GetAll()
+				.FirstOrDefault(x => x.UserId == userId && x.SoftId == softId)
+				?.Id ?? 0;
+
+			if (userSoftId == 0)
+				return;
+
+			await _uow.UserSoft.Delete(userSoftId);
+			await _uow.CommitAsync();
 		}
 
 		public async Task<SoftEntity> GetSoftAsync(long id) => await _uow.Soft.Get(id);
@@ -109,27 +103,24 @@ namespace API.Services.DataServices
 
 		public async Task<long> SaveSoftAsync(string name)
 		{
-			var entity = new SoftEntity()
+			var entity = new SoftEntity
 			{
 				Name = name,
 			};
+
 			await _uow.Soft.AddOrUpdate(entity);
 			await _uow.CommitAsync();
 
 			return entity.Id;
 		}
 
-		public async Task<IEnumerable<long>> GetSoftOwners(long softwareId)
+		public async Task<IEnumerable<long>> GetSoftOwners(long softId)
 		{
-			var software = await GetSoftAsync(softwareId);
-			if (software == null)
-				return null;
-
-			var list = _uow.UserSoft.GetAll()
-				.Where(x => x.SoftId == softwareId)
+			var softOwners = _uow.UserSoft.GetAll()
+				.Where(x => x.SoftId == softId)
 				.Select(x => x.UserId);
 
-			return list;
+			return softOwners;
 		}
 	}
 }

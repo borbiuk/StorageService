@@ -23,6 +23,6 @@ namespace API.Services.DataServices
 
 		Task<long> SaveSoftAsync(string name);
 
-		Task<IEnumerable<long>> GetSoftOwners(long softwareId);
+		Task<IEnumerable<long>> GetSoftOwners(long softId);
 	}
 }

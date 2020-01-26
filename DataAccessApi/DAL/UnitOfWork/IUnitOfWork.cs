@@ -14,6 +14,6 @@ namespace DAL.UnitOfWork
 
 		IRepository<SoftEntity> Soft { get; }
 
-		IRepository<UserSoftEntity> UserSoftware { get; }
+		IRepository<UserSoftEntity> UserSoft { get; }
 	}
 }

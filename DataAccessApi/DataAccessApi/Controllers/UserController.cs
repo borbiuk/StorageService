@@ -27,16 +27,16 @@ namespace DataAccess.API.Controllers
 
 		[HttpPut]
 		[Route("create")]
-		public async Task<long> CreateUser([FromForm]string data) => await _das.SaveUserAsync(data);
+		public async Task<long> CreateUser([FromHeader]string data) => await _das.SaveUserAsync(data);
 
 		[HttpPost]
 		[Route("set")]
-		public async Task SetSoft([FromForm] long userId, long softwareId) =>
+		public async Task SetSoft([FromHeader] long userId, long softwareId) =>
 			await _das.SetUserSoft(userId, softwareId);
 
 		[HttpPost]
 		[Route("take")]
-		public async Task TakeSoft([FromForm] long userId, [FromForm] long softwareId) =>
+		public async Task TakeSoft([FromHeader] long userId, [FromHeader] long softwareId) =>
 			await _das.RemoveUserSoft(userId, softwareId);
 	}
 }

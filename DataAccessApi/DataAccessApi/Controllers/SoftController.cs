@@ -29,10 +29,10 @@ namespace DataAccess.Api.Controllers
 
 		[HttpPut]
 		[Route("create")]
-		public async Task<long> CreateSoft([FromForm]string data) => await _das.SaveSoftAsync(data);
+		public async Task<long> CreateSoft([FromHeader]string data) => await _das.SaveSoftAsync(data);
 
 		[HttpGet]
 		[Route("owners/{id}")]
-		public async Task<IEnumerable<long>> GetOwners([FromForm] long id) => await _das.GetSoftOwners(id);
+		public async Task<IEnumerable<long>> GetOwners([FromRoute] long id) => await _das.GetSoftOwners(id);
 	}
 }
