@@ -2,7 +2,7 @@
 
 namespace DataAccess.Entities
 {
-	public class UserSoftwareEntity : IEntity
+	public class UserSoftEntity : IEntity
 	{
 		public long Id { get; set; }
 
@@ -10,8 +10,8 @@ namespace DataAccess.Entities
 
 		public UserEntity User { get; set; }
 
-		public long SoftwareId { get; set; }
+		public long SoftId { get; set; }
 
-		public SoftwareEntity Software { get; set; }
+		public SoftEntity Soft { get; set; }
 	}
 }

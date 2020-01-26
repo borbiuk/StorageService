@@ -8,7 +8,9 @@ namespace DAL
 	{
 		public DbSet<UserEntity> UsersEntities { get; set; }
 
-		public DbSet<SoftwareEntity> SoftwareEntities { get; set; }
+		public DbSet<SoftEntity> SoftwareEntities { get; set; }
+
+		public DbSet<UserSoftEntity> UserSoftEntities { get; set; }
 
 		public ApplicationContext(DbContextOptions<ApplicationContext> options)
 			: base(options)
@@ -37,7 +39,7 @@ namespace DAL
 					.IsRequired();
 			});
 
-			modelBuilder.Entity<SoftwareEntity>(entity =>
+			modelBuilder.Entity<SoftEntity>(entity =>
 			{
 				entity.HasKey(_ => _.Id);
 
@@ -54,17 +56,23 @@ namespace DAL
 					.IsRequired();
 			});
 
-			modelBuilder.Entity<UserSoftwareEntity>(entity =>
+			modelBuilder.Entity<UserSoftEntity>(entity =>
 			{
-				entity.HasKey(_ => new {_.UserId, _.SoftwareId});
+				entity.HasKey(_ => new {_.Id, _.UserId, _.SoftId});
+
+				entity.Property(_ => _.Id)
+					.HasColumnName("id")
+					.HasColumnType("BIGINT")
+					.ValueGeneratedOnAdd()
+					.IsRequired();
 
 				entity.HasOne(_ => _.User)
-					.WithMany(_ => _.UserSoftwareEntities)
+					.WithMany(_ => _.UserSoftEntities)
 					.HasForeignKey(_ => _.UserId);
 
-				entity.HasOne(_ => _.Software)
-					.WithMany(_ => _.UserSoftwareEntities)
-					.HasForeignKey(_ => _.SoftwareId);
+				entity.HasOne(_ => _.Soft)
+					.WithMany(_ => _.UserSoftEntities)
+					.HasForeignKey(_ => _.SoftId);
 			});
 		}
 	}

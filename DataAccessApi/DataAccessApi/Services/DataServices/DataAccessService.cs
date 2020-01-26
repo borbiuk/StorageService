@@ -3,6 +3,7 @@ using DAL.UnitOfWork;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DataAccess.API.Dto;
 using DataAccess.Entities;
 
 namespace API.Services.DataServices
@@ -16,12 +17,22 @@ namespace API.Services.DataServices
 			_uow = unitOfWork;
 		}
 
-		public async Task<UserEntity> GetUserAsync(long id)
+		public async Task<UserDto> GetUserAsync(long id)
 		{
 			var user = await _uow.Users.Get(id);
-			user.UserSoftwareEntities = _uow.UserSoftware.GetAll().Where(_ => _.UserId == id).ToList();
+			if (user == null)
+				return null;
 
-			return user;
+			var userSoft = _uow.UserSoft.GetAll()
+				.Where(x => x.UserId == id)
+				.Select(x => x.SoftId);
+
+			return new UserDto
+			{
+				Id = user.Id,
+				Name = user.Name,
+				Soft = userSoft.AsEnumerable() ?? Enumerable.Empty<long>()
+			};
 		}
 
 		public async Task RemoveUserAsync(long id)
@@ -43,77 +54,79 @@ namespace API.Services.DataServices
 			return entity.Id;
 		}
 
-		public async Task SetUserSoftware(long userId, long softwareId)
+		public async Task SetUserSoft(long userId, long softId)
 		{
-			var software = await GetSoftwareAsync(softwareId);
-			if (software == null)
+			var soft = await GetSoftAsync(softId);
+			if (soft == null)
 				return;
 
-			var user = await GetUserAsync(userId);
+			var user = await _uow.Users.Get(userId);
 			if (user == null)
 				return;
 
-			if (user.UserSoftwareEntities == null)
-				user.UserSoftwareEntities = new List<UserSoftwareEntity>();
+			if (user.UserSoftEntities == null || !user.UserSoftEntities.Any())
+				user.UserSoftEntities = new List<UserSoftEntity>();
+			else if (user.UserSoftEntities.Any(x => x.SoftId == softId))
+				return;
 
-			user.UserSoftwareEntities.Add(new UserSoftwareEntity
+			var userSoft = new UserSoftEntity
 			{
 				UserId = userId,
 				User = user,
-				SoftwareId = softwareId,
-				Software = software,
-			});
+				SoftId = softId,
+				Soft = soft
+			};
 
-			await _uow.Users.AddOrUpdate(user);
+			await _uow.UserSoft.AddOrUpdate(userSoft);
 			await _uow.CommitAsync();
 		}
 
-		public async Task RemoveUserSoftware(long userId, long softwareId)
+		public async Task RemoveUserSoft(long userId, long softId)
 		{
-			var software = await GetSoftwareAsync(softwareId);
-			if (software == null)
-				return;
+			//var software = await GetSoftAsync(softwareId);
+			//if (software == null)
+			//	return;
+			//
+			//var user = await GetUserAsync(userId);
+			//if (user?.UserSoftwareEntities == null
+			//	|| user.UserSoftwareEntities.Count == 0
+			//	|| user.UserSoftwareEntities.FirstOrDefault(x => x.SoftwareId == softwareId) == null)
+			//	return;
+			//
+			//user.UserSoftwareEntities.Remove(user.UserSoftwareEntities.First(x => x.SoftwareId == softwareId));
+			//
+			//await _uow.Users.AddOrUpdate(user);
+			//await _uow.CommitAsync();
+		}
 
-			var user = await GetUserAsync(userId);
-			if (user?.UserSoftwareEntities == null
-				|| user.UserSoftwareEntities.Count == 0
-				|| user.UserSoftwareEntities.FirstOrDefault(x => x.SoftwareId == softwareId) == null)
-				return;
+		public async Task<SoftEntity> GetSoftAsync(long id) => await _uow.Soft.Get(id);
 
-			user.UserSoftwareEntities.Remove(user.UserSoftwareEntities.First(x => x.SoftwareId == softwareId));
-
-			await _uow.Users.AddOrUpdate(user);
+		public async Task RemoveSoftAsync(long id)
+		{
+			await _uow.Soft.Delete(id);
 			await _uow.CommitAsync();
 		}
 
-		public async Task<SoftwareEntity> GetSoftwareAsync(long id) => await _uow.Software.Get(id);
-
-		public async Task RemoveSoftwareAsync(long id)
+		public async Task<long> SaveSoftAsync(string name)
 		{
-			await _uow.Software.Delete(id);
-			await _uow.CommitAsync();
-		}
-
-		public async Task<long> SaveSoftwareAsync(string name)
-		{
-			var entity = new SoftwareEntity()
+			var entity = new SoftEntity()
 			{
 				Name = name,
 			};
-			await _uow.Software.AddOrUpdate(entity);
+			await _uow.Soft.AddOrUpdate(entity);
 			await _uow.CommitAsync();
 
 			return entity.Id;
 		}
 
-		public async Task<IEnumerable<long>> GetSoftwareOwners(long softwareId)
+		public async Task<IEnumerable<long>> GetSoftOwners(long softwareId)
 		{
-			var software = await GetSoftwareAsync(softwareId);
+			var software = await GetSoftAsync(softwareId);
 			if (software == null)
 				return null;
 
-			var list = _uow.UserSoftware.GetAll()
-				.Where(x => x.SoftwareId == softwareId)
+			var list = _uow.UserSoft.GetAll()
+				.Where(x => x.SoftId == softwareId)
 				.Select(x => x.UserId);
 
 			return list;

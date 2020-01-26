@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using API.Services.DataServices;
 using DAL.Entities;
+using DataAccess.API.Dto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DataAccess.API.Controllers
@@ -22,7 +23,7 @@ namespace DataAccess.API.Controllers
 
 		[HttpGet]
 		[Route("get/{id}")]
-		public async Task<UserEntity> GetUser([FromRoute]long id) => await _das.GetUserAsync(id);
+		public async Task<UserDto> GetUser([FromRoute]long id) => await _das.GetUserAsync(id);
 
 		[HttpPut]
 		[Route("create")]
@@ -30,12 +31,12 @@ namespace DataAccess.API.Controllers
 
 		[HttpPost]
 		[Route("set")]
-		public async Task SetSoftware([FromForm] long userId, long softwareId) =>
-			await _das.SetUserSoftware(userId, softwareId);
+		public async Task SetSoft([FromForm] long userId, long softwareId) =>
+			await _das.SetUserSoft(userId, softwareId);
 
 		[HttpPost]
 		[Route("take")]
-		public async Task TakeSoftware([FromForm] long userId, [FromForm] long softwareId) =>
-			await _das.RemoveUserSoftware(userId, softwareId);
+		public async Task TakeSoft([FromForm] long userId, [FromForm] long softwareId) =>
+			await _das.RemoveUserSoft(userId, softwareId);
 	}
 }

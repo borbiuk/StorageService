@@ -12,6 +12,6 @@ namespace DAL.Entities
 
 		public string Name { get; set; }
 
-		public ICollection<UserSoftwareEntity> UserSoftwareEntities { get; set; }
+		public ICollection<UserSoftEntity> UserSoftEntities { get; set; }
 	}
 }

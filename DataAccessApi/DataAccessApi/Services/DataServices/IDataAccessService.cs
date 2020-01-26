@@ -1,28 +1,28 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using DAL.Entities;
+using DataAccess.API.Dto;
 using DataAccess.Entities;
 
 namespace API.Services.DataServices
 {
 	public interface IDataAccessService
 	{
-		Task<UserEntity> GetUserAsync(long id);
+		Task<UserDto> GetUserAsync(long id);
 
 		Task RemoveUserAsync(long id);
 
 		Task<long> SaveUserAsync(string name);
 
-		Task SetUserSoftware(long userId, long softwareId);
+		Task SetUserSoft(long userId, long softId);
 
-		Task RemoveUserSoftware(long userId, long softwareId);
+		Task RemoveUserSoft(long userId, long softId);
 
-		Task<SoftwareEntity> GetSoftwareAsync(long id);
+		Task<SoftEntity> GetSoftAsync(long id);
 
-		Task RemoveSoftwareAsync(long id);
+		Task RemoveSoftAsync(long id);
 
-		Task<long> SaveSoftwareAsync(string name);
+		Task<long> SaveSoftAsync(string name);
 
-		Task<IEnumerable<long>> GetSoftwareOwners(long softwareId);
+		Task<IEnumerable<long>> GetSoftOwners(long softwareId);
 	}
 }

@@ -11,8 +11,8 @@ namespace DAL.UnitOfWork
 		private readonly ApplicationContext _context;
 
 		private IRepository<UserEntity> _userEntities;
-		private IRepository<SoftwareEntity> _softwareEntities;
-		private IRepository<UserSoftwareEntity> _userSoftware;
+		private IRepository<SoftEntity> _softEntities;
+		private IRepository<UserSoftEntity> _userSoft;
 		private bool _disposed;
 
 		public UnitOfWork(ApplicationContext appContext)
@@ -22,10 +22,10 @@ namespace DAL.UnitOfWork
 
 		public IRepository<UserEntity> Users => _userEntities ??= new GenericRepository<UserEntity>(_context);
 		
-		public IRepository<SoftwareEntity> Software => _softwareEntities ??= new GenericRepository<SoftwareEntity>(_context);
+		public IRepository<SoftEntity> Soft => _softEntities ??= new GenericRepository<SoftEntity>(_context);
 
-		public IRepository<UserSoftwareEntity> UserSoftware =>
-			_userSoftware ??= new GenericRepository<UserSoftwareEntity>(_context);
+		public IRepository<UserSoftEntity> UserSoft =>
+			_userSoft ??= new GenericRepository<UserSoftEntity>(_context);
 
 		/// <summary>
 		/// Async commit changes to data storage.
