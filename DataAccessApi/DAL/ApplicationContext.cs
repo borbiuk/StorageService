@@ -58,7 +58,10 @@ namespace DAL
 
 			modelBuilder.Entity<UserSoftEntity>(entity =>
 			{
-				entity.HasKey(_ => new {_.Id, _.UserId, _.SoftId});
+				entity.HasKey(_ => _.Id);
+
+				entity.HasIndex(_ => new {_.UserId, _.SoftId})
+					.IsUnique();
 
 				entity.Property(_ => _.Id)
 					.HasColumnName("id")

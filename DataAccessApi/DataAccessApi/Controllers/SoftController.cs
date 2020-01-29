@@ -4,6 +4,7 @@ using API.Services.DataServices;
 using Microsoft.AspNetCore.Mvc;
 
 using System.Threading.Tasks;
+using DataAccess.API.Dto;
 using DataAccess.Entities;
 
 namespace DataAccess.Api.Controllers
@@ -42,5 +43,9 @@ namespace DataAccess.Api.Controllers
 			var result = await _das.GetSoftOwners(id);
 			return new ActionResult<IEnumerable<long>>(result);
 		}
+
+		[HttpGet]
+		[Route("get/all")]
+		public async Task<IEnumerable<SoftSimpleDto>> GetAll() => _das.GetAllSoft();
 	}
 }

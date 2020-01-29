@@ -24,5 +24,9 @@ namespace API.Services.DataServices
 		Task<long> SaveSoftAsync(string name);
 
 		Task<IEnumerable<long>> GetSoftOwners(long softId);
+		
+		IEnumerable<UserSimpleDto> GetAllUsers();
+		
+		IEnumerable<SoftSimpleDto> GetAllSoft();
 	}
 }

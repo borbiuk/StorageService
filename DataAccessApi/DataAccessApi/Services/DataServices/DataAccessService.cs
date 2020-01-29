@@ -64,8 +64,9 @@ namespace API.Services.DataServices
 			if (user == null)
 				return;
 
-			if (user.UserSoftEntities != null
-				&& user.UserSoftEntities.Any(x => x.UserId == userId && x.SoftId == softId))
+			var userIsSoftOwner = _uow.UserSoft.GetAll()
+				.Any(x => x.UserId == userId && x.SoftId == softId);
+			if (userIsSoftOwner)
 				return;
 
 			var userSoft = new UserSoftEntity
@@ -122,5 +123,19 @@ namespace API.Services.DataServices
 
 			return softOwners;
 		}
+
+		public IEnumerable<SoftSimpleDto> GetAllSoft() =>
+			_uow.Soft.GetAll().Select(x => new SoftSimpleDto
+			{
+				Id = x.Id,
+				Name = x.Name
+			});
+
+		public IEnumerable<UserSimpleDto> GetAllUsers() =>
+			_uow.Users.GetAll().Select(x => new UserSimpleDto
+			{
+				Id = x.Id,
+				Name = x.Name
+			});
 	}
 }
