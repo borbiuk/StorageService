@@ -1,7 +1,10 @@
 ﻿using API.TransferData;
+
 using AutoMapper;
+
 using DAL.Entities;
 using DAL.UnitOfWork;
+
 using System;
 using System.Threading.Tasks;
 
@@ -23,8 +26,10 @@ namespace API.Services.DataServices
 		public async Task<EntityDto> GetDataAsync(long id)
 		{
 			var entity = await _uow.Entities.Get(id);
-			var dto = entity != null ? _mapper.Map<EntityDto>(entity) : null;
-			return dto;
+
+			return entity != null
+				? _mapper.Map<EntityDto>(entity)
+				: null;
 		}
 		public async Task RemoveDataAsync(long id)
 		{
@@ -39,6 +44,7 @@ namespace API.Services.DataServices
 				Data = data,
 				Date = CurrentTime,
 			};
+
 			await _uow.Entities.AddOrUpdate(entity);
 			await _uow.CommitAsync();
 

@@ -1,5 +1,6 @@
 ﻿using DAL.Entities;
 using DAL.Repositories;
+
 using System;
 using System.Threading.Tasks;
 
@@ -20,7 +21,9 @@ namespace DAL.UnitOfWork
 		/// <summary>
 		/// Repository provide access to <see cref="SimpleEntity"/> storage.
 		/// </summary>
-		public IRepository<SimpleEntity> Entities => _entities ?? (_entities = new GenericRepository<SimpleEntity>(_context));
+		public IRepository<SimpleEntity> Entities =>
+			_entities
+			?? (_entities = new GenericRepository<SimpleEntity>(_context));
 
 		/// <summary>
 		/// Commit changes to data storage.

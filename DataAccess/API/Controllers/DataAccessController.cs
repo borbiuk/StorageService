@@ -20,18 +20,22 @@ namespace DataAccess.Api.Controllers
 
 		[HttpDelete]
 		[Route("delete/{id}")]
-		public async Task DeleteData([FromRoute]long id) => await _das.RemoveDataAsync(id);
+		public async Task DeleteData([FromRoute]long id) =>
+			await _das.RemoveDataAsync(id);
 
 		[HttpGet]
 		[Route("get/{id}")]
-		public async Task<EntityDto> GetData([FromRoute]long id) => await _das.GetDataAsync(id);
+		public async Task<EntityDto> GetData([FromRoute]long id) =>
+			await _das.GetDataAsync(id);
 
 		[HttpPut]
 		[Route("create")]
-		public async Task<long> SaveData([FromForm]string data) => await _das.SaveDataAsync(data);
+		public async Task<long> SaveData([FromForm]string data) =>
+			await _das.SaveDataAsync(data);
 
 		[HttpPost]
 		[Route("update")]
-		public async Task UpdateData([FromForm]UpdateEntityDto dto) => await _das.UpdateDataAsync(dto);
+		public async Task UpdateData([FromForm]UpdateEntityDto dto) =>
+			await _das.UpdateDataAsync(dto);
 	}
 }

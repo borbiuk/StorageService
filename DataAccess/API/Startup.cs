@@ -1,16 +1,21 @@
 using Microsoft.OpenApi.Models;
-using API.Services.DataServices;
+
 using AutoMapper;
+
 using DAL;
 using DAL.UnitOfWork;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using FluentValidation.AspNetCore;
+
 using FluentValidation;
+using FluentValidation.AspNetCore;
+
+using API.Services.DataServices;
 using API.TransferData;
 using API.TransferData.Validators;
 
@@ -45,14 +50,14 @@ namespace DataAccess.Api
 
 			services.AddAutoMapper(typeof(Startup));
 
+			// Connect to Database.
+			services.AddDbContext<ApplicationContext>(options =>
+				options.UseSqlServer(Configuration.GetConnectionString("SqlDatabase")));
+
 			// Dependency Injection setup.
 			services.AddScoped<IUnitOfWork, UnitOfWork>();
 			services.AddScoped<IDataAccessService, DataAccessService>();
 			services.AddTransient<IValidator<EntityDto>, EntityDtoValidator>();
-
-			// Connect to Database.
-			services.AddDbContext<ApplicationContext>(options =>
-				options.UseSqlServer(Configuration.GetConnectionString("SqlDatabase")));
 
 			// Register the Swagger generator, defining 1 or more Swagger documents.
 			services.AddSwaggerGen(options =>
@@ -77,8 +82,6 @@ namespace DataAccess.Api
 			app.UseHttpsRedirection();
 
 			app.UseRouting();
-
-			app.UseAuthorization();
 
 			// Enable middleware to serve generated Swagger as a JSON endpoint.
 			app.UseSwagger();
