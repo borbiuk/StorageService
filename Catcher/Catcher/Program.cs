@@ -1,23 +1,35 @@
 ﻿using System;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 
 namespace Catcher
 {
-	class Program
+	internal class Program
 	{
 		static void Main(string[] args)
 		{
-			var catcher = new СatcherService();
+			var hostBuilder = GetWebHostBuilder()
+				.Build();
 
-			try
-			{
-				catcher.Run();
-			}
-			catch (Exception)
-			{
-				throw;
-			}
-
-			Console.WriteLine("");
+			hostBuilder.Run();
 		}
+
+		/// <summary>
+		/// Returns configured WebHostBuilder
+		/// </summary>
+		private static IWebHostBuilder GetWebHostBuilder() =>
+			new WebHostBuilder()
+				.UseKestrel()
+				.UseIISIntegration()
+				.UseStartup<Startup>()
+				.UseConfiguration(GetConfiguration());
+
+		/// <summary>
+		/// Get base application configuration
+		/// </summary>
+		private static IConfiguration GetConfiguration() =>
+			new ConfigurationBuilder()
+				.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+				.Build();
 	}
 }

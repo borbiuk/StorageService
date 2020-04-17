@@ -1,13 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <UserSecretsId>72b43649-f15b-4690-bf0b-22f25a2ba74d</UserSecretsId>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<UserSecretsId>72b43649-f15b-4690-bf0b-22f25a2ba74d</UserSecretsId>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\QueueClient\QueueClient.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="Swashbuckle.AspNetCore" Version="5.3.2" />
+	</ItemGroup>
 
+	<ItemGroup>
+		<ProjectReference Include="..\QueueClient\QueueClient.csproj" />
+		<ProjectReference Include="..\..\BackgroundProvider\BackgroundProvider\BackgroundProvider.csproj" />
+	</ItemGroup>
 
 </Project>

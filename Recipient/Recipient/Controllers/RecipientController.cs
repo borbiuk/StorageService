@@ -1,24 +1,24 @@
 ﻿using System.Threading.Tasks;
 
+using BackgroundProvider;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
 using QueueClient;
 
-using Recipient.Services.Interfaces;
-
 namespace Recipient.Controllers
 {
 	[ApiController]
 	[Route("api")]
-	internal class RecipientController : ControllerBase
+	public class RecipientController : ControllerBase
 	{
 		private readonly string _queueName;
-		private readonly IBackgroundWorkerProvider _backgroundWorker;
+		private readonly BackgroundWorkerProvider _backgroundWorker;
 		private readonly IQueueClient _queueClient;
 
-		internal RecipientController(IConfiguration configuration,
-			IBackgroundWorkerProvider backgroundWorker,
+		public RecipientController(IConfiguration configuration,
+			BackgroundWorkerProvider backgroundWorker,
 			IQueueClient queueClient)
 		{
 			_queueName = configuration["RabbitMq:QueueName"];
@@ -28,8 +28,10 @@ namespace Recipient.Controllers
 
 		[HttpPut]
 		[Route("save")]
-		internal async Task Save([FromForm]string data) =>
-			await _backgroundWorker.QueueBackgroundAsyncWorkItem(async () =>
-				await _queueClient.SendAsync(_queueName, data));
+		public async Task Save([FromForm]string data)
+		{
+			var sendDataToQueue = _queueClient.SendAsync(_queueName, data);
+			await _backgroundWorker.ToQueue(async () => await  sendDataToQueue);
+		}
 	}
 }
