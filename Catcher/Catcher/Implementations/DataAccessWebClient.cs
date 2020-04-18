@@ -4,31 +4,26 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Catcher.Interfaces;
 
-namespace DataAccessWebClient
+namespace Catcher.Implementations
 {
 	public class DataAccessWebClient : IDataAccessClient
 	{
-		private const string PostPath = "";
+		private const string PostPath = "/api/data/create";
 		private readonly HttpClient _apiClient;
 
 		public DataAccessWebClient(string apiBaseAddress)
 		{
-			_apiClient = new HttpClient
+			_apiClient = new HttpClient()
 			{
 				BaseAddress = new Uri(apiBaseAddress)
 			};
-
-			Send("xxx");
-			Send("xxx");
-			Send("xxx");
-			Send("xxx");
 		}
 
 		public async Task Send(string data)
 		{
 			var content = GetStreamContent(data);
 
-			await _apiClient.PostAsync(PostPath, content);
+			await _apiClient.PutAsync(_apiClient.BaseAddress + PostPath, content);
 		}
 
 		public async Task<bool> TrySend(string data)

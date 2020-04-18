@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Catcher.Implementations;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 
@@ -6,12 +8,12 @@ namespace Catcher
 {
 	internal class Program
 	{
-		static void Main(string[] args)
+		static async Task Main(string[] args)
 		{
 			var hostBuilder = GetWebHostBuilder()
 				.Build();
 
-			hostBuilder.Run();
+			await hostBuilder.RunAsync();
 		}
 
 		/// <summary>

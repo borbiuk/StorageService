@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Catcher.Implementations;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,6 +41,9 @@ namespace Catcher
 			{
 				app.UseDeveloperExceptionPage();
 			}
+
+			var sender = new DataAccessWebClient("https://localhost:5003");
+			sender.Send("Цілую Дарію у носик.");
 		}
 	}
 }
