@@ -8,6 +8,8 @@ namespace BackgroundProvider
 {
 	internal static class Logger
 	{
+		private const int ThreadQueueSize = 5;
+
 		static Logger()
 		{
 			var loggerConfiguration = GetConfiguration();
@@ -32,8 +34,8 @@ namespace BackgroundProvider
 			return new LoggerConfiguration()
 				.MinimumLevel.Information()
 				.WriteTo.Async(innerConfig =>
-					innerConfig.File(logFilePath, rollingInterval: RollingInterval.Hour),
-					bufferSize: 500);
+					innerConfig.File(logFilePath, rollingInterval: RollingInterval.Minute),
+					bufferSize: ThreadQueueSize);
 		}
 	}
 }

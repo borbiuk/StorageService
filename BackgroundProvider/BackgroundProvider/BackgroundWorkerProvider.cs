@@ -22,16 +22,12 @@ namespace BackgroundProvider
 		{
 			if (workersCount <= 0)
 			{
-				var e = new BackgroundProviderException(Messages.WorkersCount);
-				Logger.Instance.Fatal(e, e.Message);
-				
-				throw e;
+				var ex = new BackgroundProviderException(Messages.WorkersCount);
+				Logger.Instance.Error(ex, ex.Message);
 			}
 			
 			for (var i = 0; i < workersCount; i++)
 				StartWorker();
-
-			Logger.Instance.Error("Love Daria");
 		}
 
 		public async Task ToQueue(Func<Task> workItem)
@@ -40,12 +36,9 @@ namespace BackgroundProvider
 			{
 				await QueueChannel.Writer.WriteAsync(workItem);
 			}
-			catch (Exception innerException)
+			catch (Exception ex)
 			{
-				var e = new BackgroundProviderException(Messages.WorkerAdding, innerException);
-				Logger.Instance.Error(e, e.Message);
-				
-				throw e;
+				Logger.Instance.Error(ex, Messages.WorkerAdding);
 			}
 		}
 
@@ -61,13 +54,9 @@ namespace BackgroundProvider
 						{
 							await action();
 						}
-						catch (Exception innerException)
+						catch (Exception ex)
 						{
-							var e = new BackgroundProviderException(
-								Messages.TaskExecution, innerException);
-							Logger.Instance.Error(e, e.Message);
-
-							throw e;
+							Logger.Instance.Error(ex, Messages.TaskExecution);
 						}
 			});
 	}
