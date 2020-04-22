@@ -22,6 +22,8 @@ namespace DAL
 
 			modelBuilder.Entity<SimpleEntity>(entity =>
 			{
+				entity.ToTable("Main");
+
 				entity.HasKey(_ => _.Id);
 
 				entity.Property(_ => _.Id)

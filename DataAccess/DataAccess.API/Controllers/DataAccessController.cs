@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace DataAccess.Api.Controllers
 {
 	[ApiController]
-	[Route("api/data")]
+	[Route("api")]
 	public class DataAccessController : ControllerBase
 	{
 		private readonly IDataAccessService _das;

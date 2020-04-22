@@ -61,9 +61,13 @@ namespace DataAccess.Api
 
 			// Register the Swagger generator, defining 1 or more Swagger documents.
 			services.AddSwaggerGen(options =>
+			{
+				options.SwaggerDoc("v1", new OpenApiInfo
 				{
-					options.SwaggerDoc("v1", new OpenApiInfo { Title = "Data Access Api swagger", Version = "v1" });
+					Title = "Data Access API",
+					Version = "v1"
 				});
+			});
 		}
 
 		/// <summary>
@@ -80,8 +84,11 @@ namespace DataAccess.Api
 			}
 
 			app.UseHttpsRedirection();
-
 			app.UseRouting();
+			app.UseEndpoints(endpoints =>
+			{
+				endpoints.MapControllers();
+			});
 
 			// Enable middleware to serve generated Swagger as a JSON endpoint.
 			app.UseSwagger();
@@ -89,15 +96,10 @@ namespace DataAccess.Api
 			// Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
 			// specifying the Swagger JSON endpoint.
 			app.UseSwaggerUI(c =>
-				{
-					c.SwaggerEndpoint("/swagger/v1/swagger.json", "Data Access Api swagger v1");
-					c.RoutePrefix = string.Empty;
-				});
-
-			app.UseEndpoints(endpoints =>
-				{
-					endpoints.MapControllers();
-				});
+			{
+				c.SwaggerEndpoint("/swagger/v1/swagger.json", "Data Access API v1");
+				c.RoutePrefix = string.Empty;
+			});
 		}
 	}
 }
