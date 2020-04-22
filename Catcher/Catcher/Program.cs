@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Catcher.Implementations;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 
@@ -8,7 +8,7 @@ namespace Catcher
 {
 	internal class Program
 	{
-		static async Task Main(string[] args)
+		public static async Task Main()
 		{
 			var hostBuilder = GetWebHostBuilder()
 				.Build();
@@ -17,7 +17,7 @@ namespace Catcher
 		}
 
 		/// <summary>
-		/// Returns configured WebHostBuilder
+		/// Returns configured WebHostBuilder.
 		/// </summary>
 		private static IWebHostBuilder GetWebHostBuilder() =>
 			new WebHostBuilder()
@@ -27,7 +27,7 @@ namespace Catcher
 				.UseConfiguration(GetConfiguration());
 
 		/// <summary>
-		/// Get base application configuration
+		/// Get base application configuration.
 		/// </summary>
 		private static IConfiguration GetConfiguration() =>
 			new ConfigurationBuilder()

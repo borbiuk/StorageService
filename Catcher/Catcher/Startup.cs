@@ -1,4 +1,8 @@
-﻿using Catcher.Implementations;
+﻿using Catcher.Configurations;
+using Catcher.Extensions;
+using Catcher.Implementations;
+using Catcher.Interfaces;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -7,15 +11,15 @@ using Microsoft.Extensions.Hosting;
 
 namespace Catcher
 {
-	internal class Startup
+	public class Startup
 	{
-		public Startup(IConfiguration configuration)
+		public Startup(IWebHostEnvironment env)
 		{
-			Configuration = configuration;
+			Configuration = GetConfiguration(env);
 		}
 
 		/// <summary>
-		/// Set of configuration properties
+		/// Set of configuration properties.
 		/// </summary>
 		public IConfiguration Configuration { get; }
 
@@ -27,6 +31,19 @@ namespace Catcher
 		/// </remarks>
 		public void ConfigureServices(IServiceCollection services)
 		{
+			// Configurations init.
+			services
+				.AddOptions()
+				.Configure<DataAccessWebApiConfig>(Configuration.GetSection("DataAccessWebApi"))
+				.Configure<RabbitMqConfig>(Configuration.GetSection("RabbitMq"));
+
+			// Dependency Injection setup.
+			services
+				.AddSingleton<IDataHandler, DataAccessWebApiHandler>()
+				.AddSingleton<ICatcher, CatcherService>();
+
+			// Configure RabbitMQ bus.
+			services.AddRabbitMqBus();
 		}
 
 		/// <summary>
@@ -42,8 +59,23 @@ namespace Catcher
 				app.UseDeveloperExceptionPage();
 			}
 
-			var sender = new DataAccessWebClient("https://localhost:5003");
-			sender.Send("Цілую Дарію у носик.");
+			app.UseCatcher();
+		}
+
+		private static IConfiguration GetConfiguration(IWebHostEnvironment env)
+		{
+			var builder = new ConfigurationBuilder()
+				.SetBasePath(env.ContentRootPath)
+				.AddJsonFile("appsettings.json",
+							optional: false,
+							reloadOnChange: true);
+
+			if (env.IsDevelopment())
+			{
+				builder.AddUserSecrets<Startup>();
+			}
+
+			return builder.Build();
 		}
 	}
 }

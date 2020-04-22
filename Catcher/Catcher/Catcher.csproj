@@ -2,9 +2,10 @@
 
 	<PropertyGroup>
 		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<UserSecretsId>14ee03ae-50f3-4ed0-b961-1b5e2fe02d61</UserSecretsId>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.App" />
+		<PackageReference Include="EasyNetQ" Version="4.0.5" />
 	</ItemGroup>
 </Project>

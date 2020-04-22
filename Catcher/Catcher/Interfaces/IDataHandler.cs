@@ -2,19 +2,19 @@
 
 namespace Catcher.Interfaces
 {
-	public interface IDataAccessClient
+	public interface IDataHandler
 	{
 		/// <summary>
-		/// Save data to the storage
+		/// Save data to the storage.
 		/// </summary>
 		/// <param name="data"></param>
-		Task Send(string data);
+		Task SaveAsync(string data);
 
 		/// <summary>
-		/// Try save data to the storage
+		/// Try save data to the storage.
 		/// </summary>
-		/// <param name="data"></param>
+		/// <param name="data">Data to save</param>
 		/// <returns>Returns `true` if data saved successful</returns>
-		Task<bool> TrySend(string data);
+		Task<bool> TrySaveAsync(string data);
 	}
 }
