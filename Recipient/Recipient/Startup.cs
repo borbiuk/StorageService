@@ -1,50 +1,74 @@
+using System;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 using BackgroundProvider;
 
 using QueueClient;
 using QueueClient.Implementations;
-using Microsoft.OpenApi.Models;
 
 namespace Recipient
 {
 	internal class Startup
 	{
-		public Startup(IConfiguration configuration)
+		public Startup(IWebHostEnvironment env)
 		{
-			Configuration = configuration;
+			Configuration = GetConfiguration(env);
 		}
 
+		/// <summary>
+		/// Set of configuration properties.
+		/// </summary>
 		public IConfiguration Configuration { get; }
 
+		/// <summary>
+		/// Add services to the container.
+		/// </summary>
+		/// <remarks>
+		/// This method gets called by the runtime.
+		/// </remarks>
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddControllers();
 
+			// Configurations init.
 			services
-				.AddSingleton(s => new BackgroundWorkerProvider(GetBackgroungWorkersCount()))
-				.AddSingleton<IQueueClient>(s =>
-					new RabbitMqClient(new QueueClientOptions
-						{
-							Host = Configuration["RabbitMq:Host"],
-							Username = Configuration["RabbitMq:Username"],
-							Password = Configuration["RabbitMq:Password"],
-						}));
+				.AddOptions()
+				.Configure<QueueClientConfig>(Configuration.GetSection("RabbitMq"));
 
-			services.AddSwaggerGen(c =>
+			// Dependency Injection setup.
+			services
+				.AddSingleton(s => new BackgroundWorkerProvider(GetBackgroundWorkersCount()))
+				.AddSingleton<IQueueClient, RabbitMqQueueClient>();
+
+			// Register the Swagger generator, defining 1 or more Swagger documents.
+			services.AddSwaggerGen(options =>
 			{
-				c.SwaggerDoc("v1", new OpenApiInfo { Title = "Recipient API", Version = "v1" });
+				options.SwaggerDoc("v1", new OpenApiInfo
+				{
+					Title = "Recipient API",
+					Version = "v1"
+				});
 			});
 		}
 
+		/// <summary>
+		/// Configure the HTTP request pipeline.
+		/// </summary>
+		/// <remarks>
+		/// This method gets called by the runtime.
+		/// </remarks>
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
 			if (env.IsDevelopment())
+			{
 				app.UseDeveloperExceptionPage();
+			}
 
 			app.UseHttpsRedirection();
 			app.UseRouting();
@@ -53,20 +77,40 @@ namespace Recipient
 				endpoints.MapControllers();
 			});
 
+			// Enable middleware to serve generated Swagger as a JSON endpoint.
 			app.UseSwagger();
+
+			// Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+			// specifying the Swagger JSON endpoint.
 			app.UseSwaggerUI(c =>
 			{
-				c.SwaggerEndpoint("/swagger/v1/swagger.json", "Recipient API V1");
+				c.SwaggerEndpoint("/swagger/v1/swagger.json", "Recipient API v1");
 				c.RoutePrefix = string.Empty;
 			});
 		}
 
-		private int GetBackgroungWorkersCount()
+		private static IConfiguration GetConfiguration(IWebHostEnvironment env)
 		{
-			const int DefaultCount = 5;
-			return int.TryParse(Configuration["Background:WorkersCount"], out var configCount)
-				? configCount
-				: DefaultCount;
+			var builder = new ConfigurationBuilder()
+				.SetBasePath(env.ContentRootPath)
+				.AddJsonFile("appsettings.json",
+							optional: false,
+							reloadOnChange: true);
+
+			if (env.IsDevelopment())
+			{
+				builder.AddUserSecrets<Startup>();
+			}
+
+			return builder.Build();
+		}
+
+		private int GetBackgroundWorkersCount()
+		{
+			if (int.TryParse(Configuration["Background:WorkersCount"], out var count))
+				return count;
+			else
+				throw new FormatException("Parameter [Background:WorkersCount] is invalid.");
 		}
 	}
 }

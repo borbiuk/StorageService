@@ -1,19 +1,24 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
+using System.Threading.Tasks;
+
 namespace Recipient
 {
 	internal class Program
 	{
-		public static void Main(string[] args)
+		public static async Task Main()
 		{
-			CreateHostBuilder(args)
+			await CreateHostBuilder()
 				.Build()
-				.Run();
+				.RunAsync();
 		}
 
-		public static IHostBuilder CreateHostBuilder(string[] args) =>
-			Host.CreateDefaultBuilder(args)
+		/// <summary>
+		/// Returns configured WebHostBuilder.
+		/// </summary>
+		private static IHostBuilder CreateHostBuilder() =>
+			Host.CreateDefaultBuilder()
 				.ConfigureWebHostDefaults(webBuilder =>
 				{
 					webBuilder.UseStartup<Startup>();

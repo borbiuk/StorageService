@@ -1,11 +1,16 @@
 ﻿namespace QueueClient
 {
-	public class QueueClientOptions
+	public class QueueClientConfig
 	{
 		/// <summary>
 		/// Queue server host.
 		/// </summary>
 		public string Host { get; set; }
+
+		/// <summary>
+		/// Queue name.
+		/// </summary>
+		public string Queue { get; set; }
 
 		/// <summary>
 		/// User name to login.

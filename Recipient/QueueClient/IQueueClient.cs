@@ -9,6 +9,6 @@ namespace QueueClient
 		/// </summary>
 		/// <param name="queue">Queue name.</param>
 		/// <param name="data">Data to send.</param>
-		public Task SendAsync(string queue, object data);
+		public Task SendAsync(object data);
 	}
 }
