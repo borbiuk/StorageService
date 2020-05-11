@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace DAL.UnitOfWork
 {
-	public class UnitOfWork : IUnitOfWork
+	public class UnitOfWork : IUnitOfWork, IDisposable
 	{
 		private readonly ApplicationContext _context;
 
-		private IRepository<SimpleEntity> _entities;
+		private IRepository<DataEntity> _entities;
 		private bool _disposed;
 
 		public UnitOfWork(ApplicationContext appContext)
@@ -19,16 +19,11 @@ namespace DAL.UnitOfWork
 		}
 
 		/// <summary>
-		/// Repository provide access to <see cref="SimpleEntity"/> storage.
+		/// Repository provide access to <see cref="DataEntity"/> storage.
 		/// </summary>
-		public IRepository<SimpleEntity> Entities =>
+		public IRepository<DataEntity> Entities =>
 			_entities
-			?? (_entities = new GenericRepository<SimpleEntity>(_context));
-
-		/// <summary>
-		/// Commit changes to data storage.
-		/// </summary>
-		public void Commit() => _context.SaveChanges();
+			?? (_entities = new GenericRepository<DataEntity>(_context));
 
 		/// <summary>
 		/// Async commit changes to data storage.

@@ -5,7 +5,7 @@ namespace DAL.Entities
 	/// <summary>
 	/// Simple entity.
 	/// </summary>
-	public class SimpleEntity : IEntity
+	public class DataEntity : IEntity
 	{
 		public long Id { get; set; }
 

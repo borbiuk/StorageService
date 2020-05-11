@@ -31,6 +31,7 @@ namespace API.Services.DataServices
 				? _mapper.Map<EntityDto>(entity)
 				: null;
 		}
+
 		public async Task RemoveDataAsync(long id)
 		{
 			await _uow.Entities.Delete(id);
@@ -39,7 +40,7 @@ namespace API.Services.DataServices
 
 		public async Task<long> SaveDataAsync(string data)
 		{
-			var entity = new SimpleEntity
+			var entity = new DataEntity
 			{
 				Data = data,
 				Date = CurrentTime,
@@ -53,7 +54,7 @@ namespace API.Services.DataServices
 
 		public async Task UpdateDataAsync(UpdateEntityDto dto)
 		{
-			var entity = _mapper.Map<SimpleEntity>(dto);
+			var entity = _mapper.Map<DataEntity>(dto);
 
 			await _uow.Entities.AddOrUpdate(entity);
 			await _uow.CommitAsync();

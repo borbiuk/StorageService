@@ -8,7 +8,7 @@ namespace DAL
 		/// <summary>
 		/// Simple entities storage.
 		/// </summary>
-		public DbSet<SimpleEntity> SimpleEntities { get; set; }
+		public DbSet<DataEntity> SimpleEntities { get; set; }
 
 		public ApplicationContext(DbContextOptions<ApplicationContext> options)
 			: base(options)
@@ -20,7 +20,7 @@ namespace DAL
 		{
 			base.OnModelCreating(modelBuilder);
 
-			modelBuilder.Entity<SimpleEntity>(entity =>
+			modelBuilder.Entity<DataEntity>(entity =>
 			{
 				entity.ToTable("Main");
 

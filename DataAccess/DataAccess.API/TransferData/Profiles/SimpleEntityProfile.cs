@@ -7,8 +7,8 @@ namespace API.TransferData.Profiles
 	{
 		public SimpleEntityProfile()
 		{
-			CreateMap<SimpleEntity, EntityDto>();
-			CreateMap<UpdateEntityDto, SimpleEntity>();
+			CreateMap<DataEntity, EntityDto>();
+			CreateMap<UpdateEntityDto, DataEntity>();
 		}
 	}
 }

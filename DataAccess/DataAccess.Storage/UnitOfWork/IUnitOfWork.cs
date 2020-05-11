@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace DAL.UnitOfWork
 {
-	public interface IUnitOfWork : IDisposable
+	public interface IUnitOfWork
 	{
-		void Commit();
-
 		Task CommitAsync();
 
-		IRepository<SimpleEntity> Entities { get; }
+		IRepository<DataEntity> Entities { get; }
 	}
 }
